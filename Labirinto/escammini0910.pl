@@ -1,4 +1,3 @@
-
 % Esempio 10 x 10
 
 num_col(10).

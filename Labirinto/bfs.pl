@@ -18,7 +18,3 @@ generaFigli(nodo(S,AzioniPerS),[Azione|AltreAzioni],Visitati,[nodo(SNuovo,[Azion
     generaFigli(nodo(S,AzioniPerS),AltreAzioni,Visitati,FigliTail).
 generaFigli(nodo(S,AzioniPerS),[_|AltreAzioni],Visitati,FigliTail):-
     generaFigli(nodo(S,AzioniPerS),AltreAzioni,Visitati,FigliTail).
-
-
-
-
