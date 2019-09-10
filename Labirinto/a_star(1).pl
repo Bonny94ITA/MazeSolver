@@ -29,8 +29,8 @@ finale(pos(7,9)).*/
 num_col(3).
 num_righe(3).
 
-occupata(pos(2,2)).
-occupata(pos(1,3)).
+%occupata(pos(2,2)).
+%occupata(pos(1,3)).
 occupata(pos(0,0)).
 
 iniziale(pos(1,1)).
@@ -60,10 +60,9 @@ bfs_aux([nodo(_,S,Azioni,_)|_],_,Azioni):-finale(S),!.
 bfs_aux([nodo(F,S,Azioni,G)|Tail],Chiusi,Soluzione):-
     findall(Azione,applicabile(Azione,S),ListaApplicabili),
     generaFigli(nodo(F,S,Azioni,G),Tail,ListaApplicabili,[S|Chiusi],ListaFigli),
-    gestioneApertiChiusi(nodo(F,S,_,_),Aperti,Chiusi),
-    aggiuntaFigliInAperti(Tail,ListaFigli,NuovaCoda),
-    
-    %append(Tail,ListaFigli,NuovaCoda),
+    %gestioneApertiChiusi(nodo(F,S,_,_),Aperti,Chiusi),
+    %aggiuntaFigliInAperti(Tail,ListaFigli,NuovaCoda),
+    append(Tail,ListaFigli,NuovaCoda),
     %write(NuovaCoda),nl,nl,
     bfs_aux(NuovaCoda,[nodo(S,Azioni)|Chiusi],Soluzione).
 
@@ -75,7 +74,7 @@ generaFigli(nodo(F,S,AzioniPerS,G),Aperti,[Azione|AltreAzioni],Chiusi,[nodo(F1,S
     gCosto(G,G1),
     hCosto(S,H),
     fCosto(H,G,F1),
-    %write("G = " + G + " H = " + H + " F1 = " + F1),nl,
+    write("G = " + G + " H = " + H + " F1 = " + F1),nl,
     generaFigli(nodo(F,S,AzioniPerS,G),Aperti,AltreAzioni,Chiusi,FigliTail).
 generaFigli(nodo(F,S,AzioniPerS,G),Aperti,[_|AltreAzioni],Chiusi,FigliTail):-
     generaFigli(nodo(F,S,AzioniPerS,G),Aperti,AltreAzioni,Chiusi,FigliTail).
@@ -106,7 +105,8 @@ aggiuntaFigliInAperti([],ListaFinale,ListaFinale):-!.
 aggiuntaFigliInAperti([Head|Tail],VecchiaLista,ListaRes) :-
     aggiuntaOrdinataElem(Head,VecchiaLista,ListaTemp),
     aggiuntaFigliInAperti(Tail,ListaTemp,ListaRes).
-
+/*
 gestioneApertiChiusi(nodo(F,S,_,_),Aperti,Chiusi) :-
     member(nodo(F)),
     write(F).
+*/

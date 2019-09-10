@@ -99,4 +99,4 @@ dfs_aux(S,[Azione|AzioniTail],Visitati,Soglia,Altezza):-
     trasforma(Azione,S,SNuovo),
     \+member(SNuovo,Visitati),
     NuovaSoglia is Soglia - 1,
-    dfs_aux(SNuovo,AzioniTail,[SNuovo|Visitati],NuovaSoglia, Altezza).
+    dfs_aux(SNuovo,AzioniTail,[SNuovo|Visitati],NuovaSoglia,Altezza).

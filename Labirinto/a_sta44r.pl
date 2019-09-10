@@ -1,13 +1,29 @@
+%Dimensione labirinto.
 num_col(3).
 num_righe(3).
 
-%occupata(pos(2,2)).
-%occupata(pos(1,3)).
-occupata(pos(0,0)).
+%Celle con ostacoli.
 
+/*occupata(pos(2,5)).
+occupata(pos(3,5)).
+occupata(pos(4,5)).
+occupata(pos(5,5)).
+occupata(pos(6,5)).
+occupata(pos(7,5)).
+occupata(pos(7,1)).
+occupata(pos(7,2)).
+occupata(pos(7,3)).
+occupata(pos(7,4)).
+occupata(pos(5,7)).
+occupata(pos(6,7)).
+occupata(pos(7,7)).
+occupata(pos(8,7)).
+occupata(pos(4,7)).
+occupata(pos(4,8)).
+occupata(pos(4,9)).*/
+occupata(pos(0,0)).
 iniziale(pos(1,1)).
 finale(pos(3,3)).
-
 
 %check su applicabilità mossa.
 applicabile(nord,pos(R,C)) :- R>1, R1 is R-1, \+ occupata(pos(R1,C)).
@@ -70,35 +86,38 @@ celleAdiacenti(CellaCorrente,ListaAdiacenti):-
 
 bfs(Soluzione):-
     iniziale(S),
-    hCosto(S, F),
+    hCosto(S,F),
     bfs_aux([nodo(S,[],0,F)],[],Soluzione).
 
 % bfs_aux(Coda,Visitati,Soluzione)
-% Coda = [nodo(S,Azioni,G)|...]
-bfs_aux([nodo(S,Azioni,G,F)|_],_,Azioni):-finale(S),write(G),write(F),!.
+% Coda = [nodo(S,Azioni)|...]
+bfs_aux([nodo(S,Azioni,_,_)|_],_,Azioni):-finale(S),!.
 bfs_aux([nodo(S,Azioni,G,F)|Tail],Visitati,Soluzione):-
     findall(Azione,applicabile(Azione,S),ListaApplicabili),
-    generaFigli(nodo(S,Azioni,G,F),ListaApplicabili,[S|Visitati],ListaFigli),
+    generaFigli(nodo(S,Azioni,G,F),Tail,ListaApplicabili,[nodo(S, Azioni,_,_)|Visitati],ListaFigli),
     append(Tail,ListaFigli,NuovaCoda),
-    bfs_aux(NuovaCoda,[S|Visitati],Soluzione).
+    write(NuovaCoda),nl,nl,
+    bfs_aux(NuovaCoda,[nodo(S,Azioni)|Visitati],Soluzione).
 
-generaFigli(_,[],_,[]).
-generaFigli(nodo(S,AzioniPerS,G,F),[Azione|AltreAzioni],Visitati,[nodo(SNuovo,NuoveAzioni,G1,F1)|FigliTail]):-
+generaFigli(_,_,[],_,[]):-!.
+generaFigli(nodo(S,AzioniPerS,G,F),Opened,[Azione|AltreAzioni],Visitati,[nodo(SNuovo,[Azione|AzioniPerS],G1,F1)|FigliTail]):-
     trasforma(Azione,S,SNuovo),
-    G1 is G+1,
-    hCosto(S, Costo),
-    F1 is Costo + G,
-    write("G = " + G + " Costo = " + Costo + " G1 = " + G1+ " F1 = " + F1),nl,
-    \+member(SNuovo,Visitati),!,
-	append(AzioniPerS, [Azione], NuoveAzioni),
-    generaFigli(nodo(S,AzioniPerS,G,F),AltreAzioni,Visitati,FigliTail).
-generaFigli(nodo(S,AzioniPerS,G,F),[_|AltreAzioni],Visitati,FigliTail):-
-    generaFigli(nodo(S,AzioniPerS,G,F),AltreAzioni,Visitati,FigliTail).
+    gCosto(G,G1),
+    hCosto(S,H),
+    fCosto(H,G,F1),
+    \+member(nodo(SNuovo,_),Visitati),
+    \+member(nodo(SNuovo,_),Opened),!,
+    generaFigli(nodo(S,AzioniPerS,G,F),Opened,AltreAzioni,Visitati,FigliTail).
+generaFigli(nodo(S,AzioniPerS,G,F),Opened,[_|AltreAzioni],Visitati,FigliTail):-
+    generaFigli(nodo(S,AzioniPerS,G,F),Opened,AltreAzioni,Visitati,FigliTail).
 
 hCosto(CellaCorrente, Costo):-
     finale(Goal),
     distanzaManhattan(CellaCorrente,Goal,Distanza),
     Costo is Distanza.
+
+gCosto(G,G1) :-
+    G1 is G+1.
 
 fCosto(G,H,F) :-
     F is G + H.
@@ -106,5 +125,5 @@ fCosto(G,H,F) :-
 distanzaManhattan(pos(X1,Y1),pos(X2,Y2),Distanza) :-
     Distanza is abs(X1-X2) + abs(Y1-Y2).
 
-costoPasso(pos(_,_), pos(_,_), Costo) :-
+costoPasso(pos(_,_), pos(_, _), Costo) :-
     Costo is 1.
