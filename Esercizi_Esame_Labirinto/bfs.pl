@@ -1,16 +1,18 @@
+%bfs(Soluzione)
 bfs(Soluzione):-
     iniziale(S),
-    bfs_aux([nodo(S,[])],[],Soluzione).
+    bfsAux([nodo(S,[])],[],Soluzione).
 
-% bfs_aux(Coda,Visitati,Soluzione)
-% Coda = [nodo(S,Azioni)|...]
-bfs_aux([nodo(S,Azioni)|_],_,Azioni):-finale(S),!.
-bfs_aux([nodo(S,Azioni)|Tail],Visitati,Soluzione):-
+%Coda = [nodo(S,Azioni)|...]
+%bfsAux(Coda,Visitati,Soluzione)
+bfsAux([nodo(S,Azioni)|_],_,Azioni):-finale(S),!.
+bfsAux([nodo(S,Azioni)|Tail],Visitati,Soluzione):-
     findall(Azione,applicabile(Azione,S),ListaApplicabili),
     generaFigli(nodo(S,Azioni),ListaApplicabili,[S|Visitati],ListaFigli),
     append(Tail,ListaFigli,NuovaCoda),
-    bfs_aux(NuovaCoda,[S|Visitati],Soluzione).
+    bfsAux(NuovaCoda,[S|Visitati],Soluzione).
 
+%generaFigli(Nodo,ListaAzioniApplicabili,ListaStatiVisitati,ListaNodiFigli)
 generaFigli(_,[],_,[]).
 generaFigli(nodo(S,AzioniPerS),[Azione|AltreAzioni],Visitati,[nodo(SNuovo,[Azione|AzioniPerS])|FigliTail]):-
     trasforma(Azione,S,SNuovo),

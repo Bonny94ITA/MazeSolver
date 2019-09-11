@@ -1,14 +1,5 @@
-/*% Esempio 3 x 3
-num_col(3).
-num_righe(3).
-
-occupata(pos(0,0)).
-
-iniziale(pos(1,1)).
-finale(pos(3,3)).
-*/
-
-% Esempio 10 x 10
+%Labirinti
+%Esempio 10 x 10
 num_col(10).
 num_righe(10).
 
@@ -35,8 +26,19 @@ occupata(pos(4,10)).
 iniziale(pos(4,2)).
 finale(pos(7,9)).
 
+/*
+%Esempio 3 x 3
+num_col(3).
+num_righe(3).
 
-/*% Esempio 100 x 100
+occupata(pos(0,0)).
+
+iniziale(pos(1,1)).
+finale(pos(3,3)).
+*/
+
+/*
+%Esempio 100 x 100
 num_col(100).
 num_righe(100).
 
@@ -46,7 +48,9 @@ iniziale(pos(1,1)).
 finale(pos(100,100)).
 */
 
-%check su applicabilitÃ  mossa.
+/********************************************/
+
+%Check sull'applicabilità della mossa.
 applicabile(nord,pos(R,C)) :- R>1, R1 is R-1, \+ occupata(pos(R1,C)).
 applicabile(est,pos(R,C)) :- num_col(NC), C<NC, C1 is C+1, \+ occupata(pos(R,C1)).
 applicabile(sud,pos(R,C)) :- num_righe(NR), R<NR, R1 is R+1, \+ occupata(pos(R1,C)).
@@ -58,13 +62,16 @@ trasforma(ovest,pos(R,C),pos(R,C1)) :- C1 is C-1.
 trasforma(sud,pos(R,C),pos(R1,C)) :-   R1 is R+1.
 trasforma(nord,pos(R,C),pos(R1,C)) :-  R1 is R-1.
 
-% stato rappresentato da nodo(F,S, ListaAzioniPerS)
+/********************************************/
+
+%Stato rappresentato dal nodo(F,S,ListaAzioniPerS,G)
+%aStar(Soluzione)
 aStar(Soluzione) :-
     iniziale(S),
     fCosto(S, 0, F),
     aStarAux( [nodo(F,S,[], 0) ], [], Soluzione),!.
 
-% aStarAux(CodaNodiDaEsplorare, NodiEspansi, Soluzione)
+%aStarAux(CodaNodiDaEsplorare,NodiEspansi,Soluzione)
 aStarAux([nodo(_F, S, ListaAzioniPerS, _G)|_], _, ListaAzioniPerS) :- finale(S).
 aStarAux([nodo(F, S, ListaAzioniPerS, G)|Frontiera], NodiEspansi, Soluzione) :-
     findall(Az, applicabile(Az, S), ListaAzioniApplicabili),
@@ -73,7 +80,7 @@ aStarAux([nodo(F, S, ListaAzioniPerS, G)|Frontiera], NodiEspansi, Soluzione) :-
     %write(NuovaFrontiera),nl,nl,
     aStarAux(NuovaFrontiera, [S|NodiEspansi], Soluzione),!.
 
-% generaFigli(Nodo, ListaAzioniApplicabili, ListaStatiVisitati, Frontiera,ListaNodiFigli)
+%generaFigli(Nodo,ListaAzioniApplicabili,ListaStatiVisitati,Frontiera,ListaNodiFigli)
 generaFigli(_, [], _, []).
 generaFigli(nodo(F, S,ListaAzioniPerS,G), [Azione|AltreAzioni], ListaStatiVisitati, [nodo(FNuovo, SNuovo, ListaAzioniNuovo ,GNuovo)|AltriFigli]) :-
     trasforma(Azione, S, SNuovo),
@@ -89,7 +96,7 @@ generaFigli(Nodo, [_|AltreAzioni], ListaStatiVisitati, ListaNodiFigli) :-
 /* * * * * * * * * * INIZIO * * * * * * * * * * *
  * * * * * * * * * * UTILS  * * * * * * * * * * */
 
- %aggiornamentoFrontiera(ListaFigli,Frontiera, NuovaFrontiera)
+%aggiornamentoFrontiera(ListaFigli,Frontiera,NuovaFrontiera)
  aggiornamentoFrontiera([], FrontieraFinale, FrontieraFinale).
  aggiornamentoFrontiera([Figlio|AltriFigli], Frontiera, NuovaFrontiera) :-
    eliminaDuplicati(Figlio, Frontiera, FrontieraNoDup),
@@ -99,7 +106,7 @@ generaFigli(Nodo, [_|AltreAzioni], ListaStatiVisitati, ListaNodiFigli) :-
  aggiornamentoFrontiera([_|AltriFigli], Frontiera, NuovaFrontiera) :-
    aggiornamentoFrontiera(AltriFigli, Frontiera, NuovaFrontiera).
 
-%eliminaDuplicati(Figlio, Frontiera, NuovaFrontiera)
+%eliminaDuplicati(Figlio,Frontiera,NuovaFrontiera)
 eliminaDuplicati(_, [], []).
 eliminaDuplicati(nodo(_,S,_,G), [nodo(_,S1,_,G1)|AltriNodi], AltriNodi) :-
     S == S1,
@@ -107,7 +114,7 @@ eliminaDuplicati(nodo(_,S,_,G), [nodo(_,S1,_,G1)|AltriNodi], AltriNodi) :-
 eliminaDuplicati(A, [N|RestoFrontiera], [N|RestoNuovaFrontiera]) :-
  eliminaDuplicati(A, RestoFrontiera, RestoNuovaFrontiera).
 
-%aggiuntaOrdinataElem(Figlio, FrontieraSenzaDuplicati, FrontieraFinale),
+%aggiuntaOrdinataElem(Figlio,FrontieraSenzaDuplicati,FrontieraFinale)
 aggiuntaOrdinataElem(Figlio, [], [Figlio]).
 aggiuntaOrdinataElem(nodo(F, S,ListaAzioniPerS,G), [nodo(F1 ,S1, ListaAzioniPerS1, G1)|RestoFrontiera],
                     [nodo(F, S,ListaAzioniPerS,G)|[nodo(F1 ,S1, ListaAzioniPerS1, G1)|RestoFrontiera]]) :-
@@ -116,7 +123,7 @@ aggiuntaOrdinataElem(nodo(F, S,ListaAzioniPerS,G), [nodo(F1 ,S1, ListaAzioniPerS
 aggiuntaOrdinataElem(X, [Y|Resto1], [Y|Resto2]) :-
   aggiuntaOrdinataElem(X, Resto1, Resto2), !.
 
-%fCosto(StatoCorrente,CostoDiG, CostoDiF).
+%fCosto(StatoCorrenteCostoDiG,CostoDiF)
 fCosto(Stato, G, F):-
     finale(Goal),
     distanzaManhattan(Stato,Goal,H),
@@ -125,6 +132,9 @@ fCosto(Stato, G, F):-
 %gCosto(CostoCamminoNodoCorrente,CostoCamminoDelFiglioDelNodoCorrente)
 gCosto(G,G1) :- G1 is G+1.
 
-%distanzaManhattan(Stato1, Stato2, DistanzaStati_1-2).
+%distanzaManhattan(Stato1, Stato2, DistanzaStati_1-2)
 distanzaManhattan(pos(X1,Y1),pos(X2,Y2),Distanza) :-
     Distanza is abs(X1-X2) + abs(Y1-Y2).
+
+/* * * * * * * * * * FINE * * * * * * * * * * *
+ * * * * * * * * * * UTILS  * * * * * * * * * * */
