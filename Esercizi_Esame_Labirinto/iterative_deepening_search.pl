@@ -1,10 +1,12 @@
 :- ['./labirinto.pl', 'mosse.pl'].
 
-%   Algoritmo Iterative Deepening a cui viene fornita una soglia iniziale di 1.
-%   Il limite viene incrementato ogni volta che non viene trovato uno stato obiettivo
-%   ad una certa profondit√† limite.
-%   L'algoritmo procede fino al raggiungimento di d, la profondit√† pi√π piccola in cui
-%   trovare lo stato obiettivo.
+% ###################################################
+%Algoritmo Iterative Deepening a cui viene fornita una soglia iniziale di 1.
+%Il limite viene incrementato ogni volta che non viene trovato uno stato obiettivo
+%ad una certa profondita'† limite.
+%L'algoritmo procede fino al raggiungimento di d, la profondita'† piu' piccola in cui
+%trovare lo stato obiettivo.
+% ###################################################
 
 id(Soluzione):-
     statistics(walltime, [_ | [_]]),
@@ -17,11 +19,9 @@ id(Soluzione):-
 %                 output   input
 % #####################################################################
 id_search_aux(Soluzione,Soglia):-
-    %% depth_limited_search(Soluzione,Soglia),
-    iniziale(S),
-    dls_aux(S,Soluzione,[S],Soglia),
+    depth_limited_search(Soluzione,Soglia),
     write("Soluzione raggiunta a profondita': "),
-    write(Soglia), nl,!.
+    write(Soglia), nl,!. %CUT PER MOSTRARE UNA SOLA SOLUZIONE.
 id_search_aux(Soluzione,Soglia):-
     NuovaSoglia is Soglia+1,
     id_search_aux(Soluzione,NuovaSoglia).
@@ -30,9 +30,9 @@ id_search_aux(Soluzione,Soglia):-
 % depth_limited_search(Soluzione, Soglia)
 %                       output    input
 % #####################################################################
-%% depth_limited_search(Soluzione,Soglia):-
-%%     iniziale(S),
-%%     dls_aux(S,Soluzione,[S],Soglia).
+depth_limited_search(Soluzione,Soglia):-
+     iniziale(S),
+     dls_aux(S,Soluzione,[S],Soglia).
 
 % #####################################################################
 % dls_aux(StatoCorrente, ListaAzioni, ListaNodiVisitati,Soglia):-

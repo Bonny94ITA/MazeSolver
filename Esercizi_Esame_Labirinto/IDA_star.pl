@@ -3,19 +3,19 @@
 % ###################################################
 % Algoritmo IDA*.
 % All'algoritmo viene fornito:
-%   • S, lo stato iniziale ricavato dalla KB,
-%   • SogliaIniziale, il valore iniziale della soglia
+%   - S, lo stato iniziale ricavato dalla KB,
+%   - SogliaIniziale, il valore iniziale della soglia
 %     coincidente con il valore dell'euristica dallo stato S,
-%   • [S], l'insieme di nodi visitati inizialmente,
-%   • 0, il costo del percorso sino a fino ad S (0 poichè iniziale),
-%   • Sol, output risultante dall'esecuzione dell'algoritmo.
+%   - [S], l'insieme di nodi visitati inizialmente,
+%   - 0, il costo del percorso sino a fino ad S (0 poiche' iniziale),
+%   - Sol, output risultante dall'esecuzione dell'algoritmo.
 % ###################################################
 
 ida(Sol):-
     statistics(walltime, [_ | [_]]),
     iniziale(S),
     hCosto(S, SogliaIniziale),
-    idastar(S, Sol, [S], 0, SogliaIniziale),!,
+    idastar(S, Sol, [S], 0, SogliaIniziale),!, % QUESTO CUT E' INSERITO PER EVITARE DI GENERARE PIU' SOLUZIONI.
     statistics(walltime, [_ | [TempoEsecuzione]]),
     write('TEMPO IMPIEGATO: '), write(TempoEsecuzione), write(' ms.'),
     write("\n"), write(Sol).
@@ -26,10 +26,10 @@ ida(Sol):-
 % #####################################################################
 idastar(S, Sol, Visitati, G, Soglia):-
     ida_search(S, Sol, Visitati, G, Soglia);
-    findall(FS, ida_node(_, FS), ListaSoglie),
-    exclude(>=(Soglia), ListaSoglie, ListaSoglieEccedenti),
-    list_min(ListaSoglieEccedenti, NuovaSoglia),
-    retractall(ida_node(_, _)),
+    findall(FS, ida_node(_, FS), ListaSoglie), % ESTRAGGO DAGLI ida_node LE SOGLIE E LE SALVO IN ListaSoglie. 
+    exclude(>=(Soglia), ListaSoglie, ListaSoglieEccedenti), % SALVO IN ListaSoglieEccedenti GLI ELEMENTI DI ListaSoglie CHE SUPERANO LA SOGLIA.
+    list_min(ListaSoglieEccedenti, NuovaSoglia), % ORDINO GLI ELEMENTI DELLA LISTA ListaSoglieEccedenti ED ESTRAGGO L'ELEMENTO MINIMO.
+    retractall(ida_node(_, _)), % ELIMINO TUTTI GLI ida_node ASSERITI DALLA KB.
     idastar(S, Sol, Visitati, 0, NuovaSoglia).
 
 % #####################################################################
@@ -44,7 +44,7 @@ ida_search(S, [Azioni|AltreAzioni], Visitati, G, Soglia):-
     \+member(SNuovo, Visitati),
     gCosto(G,CostoCamminoSNuovo),
     fCosto(SNuovo, CostoCamminoSNuovo, FNuovo),
-    assert(ida_node(SNuovo, FNuovo)),
+    assert(ida_node(SNuovo, FNuovo)), % ASSERISCO UN NUOVO NODO IN KB CON RELATIVA F.
 	FNuovo =< Soglia,
     ida_search(SNuovo, AltreAzioni, [SNuovo|Visitati], CostoCamminoSNuovo, Soglia).
 
