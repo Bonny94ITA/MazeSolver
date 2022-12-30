@@ -13,16 +13,14 @@ In order to complete this exercise, you will need:
 ## Setup
 
    - Download or clone this repository to your local machine
-   - Open the maze.pl file in your Prolog interpreter or development environment
+   - Open the labirinto.pl file in your Prolog interpreter or development environment (it is generated in python)
    - Follow the instructions in the comments to write your Prolog program
 
 Exercise
 
 The exercise consists of the following tasks:
 
-   - Define a Prolog rule path(X, Y) that represents a path from cell X to cell Y in the maze.
-   - Define a Prolog rule solve(X, Y, P) that finds a path P from cell X to cell Y in the maze.
-   - Test your solution by issuing queries to the Prolog interpreter or development environment, using the provided test cases.
+   - Test and create your solution by issuing queries to the Prolog interpreter or development environment, developing some algorithm.
 
 Resources
 
