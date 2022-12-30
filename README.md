@@ -16,13 +16,13 @@ In order to complete this exercise, you will need:
    - Open the labirinto.pl file in your Prolog interpreter or development environment (it is generated in python)
    - Follow the instructions in the comments to write your Prolog program
 
-Exercise
+## Exercise
 
 The exercise consists of the following tasks:
 
    - Test and create your solution by issuing queries to the Prolog interpreter or development environment, developing some algorithm.
 
-Resources
+## Resources
 
 For more information on Prolog programming and logic programming, check out the following resources:
 
