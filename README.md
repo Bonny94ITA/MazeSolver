@@ -1,4 +1,4 @@
-# Prolog
+# Maze Solver
 
 ## Overview
 
